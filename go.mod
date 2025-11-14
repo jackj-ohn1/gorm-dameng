@@ -1,4 +1,4 @@
-module github.com/godoes/gorm-dameng
+module github.com/jackj-ohn1/gorm-dameng
 
 go 1.20
 

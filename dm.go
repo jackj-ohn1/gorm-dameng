@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	_ "github.com/godoes/gorm-dameng/dm8" // 引入dm数据库驱动包
-	"gorm.io/gorm"                        // 引入gorm v2包
+	_ "github.com/jackj-ohn1/gorm-dameng/dm8" // 引入dm数据库驱动包
+	"gorm.io/gorm"                            // 引入gorm v2包
 	"gorm.io/gorm/callbacks"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"

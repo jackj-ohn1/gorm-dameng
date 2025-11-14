@@ -14,7 +14,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/godoes/gorm-dameng/dm8/util"
+	"github.com/jackj-ohn1/gorm-dameng/dm8/util"
 )
 
 var LogDirDef, _ = os.Getwd()

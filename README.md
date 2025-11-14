@@ -15,7 +15,7 @@
 ### 安装
 
 ```shell
-go get -d github.com/godoes/gorm-dameng
+go get -d github.com/jackj-ohn1/gorm-dameng
 ```
 
 ### 用例
@@ -27,7 +27,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/godoes/gorm-dameng"
+	"github.com/jackj-ohn1/gorm-dameng"
 	"gorm.io/gorm"
 )
 

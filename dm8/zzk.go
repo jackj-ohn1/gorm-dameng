@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/godoes/gorm-dameng/dm8/parser"
-	"github.com/godoes/gorm-dameng/dm8/util"
+	"github.com/jackj-ohn1/gorm-dameng/dm8/parser"
+	"github.com/jackj-ohn1/gorm-dameng/dm8/util"
 )
 
 func (dc *DmConnection) lex(sql string) ([]*parser.LVal, error) {

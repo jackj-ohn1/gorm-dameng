@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/godoes/gorm-dameng/dm8"
+	"github.com/jackj-ohn1/gorm-dameng/dm8"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
