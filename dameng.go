@@ -55,13 +55,26 @@ func NewConnectionConfig(user, password, host string, port int, schema string, p
 }
 
 func (c *ConnectionConfig) BuildUrl() string {
-	return BuildUrl(c.user, c.password, c.host, c.port, c.props)
+	propQuery := url.Values{}
+	for key, option := range c.props {
+		for _, value := range option {
+			propQuery.Add(key, value)
+		}
+	}
+
+	dmUrl := &url.URL{
+		Scheme:   DriverName,
+		User:     url.UserPassword(c.user, c.password),
+		Host:     net.JoinHostPort(c.host, strconv.Itoa(c.port)),
+		RawQuery: propQuery.Encode(),
+	}
+	return dmUrl.String()
 }
 
-func BuildUrl(user, password, host string, port int, urlOptions map[string][]string) string {
+func BuildUrl(user, password, host string, port int, urlOptions ...map[string]string) string {
 	propQuery := url.Values{}
-	for key, option := range urlOptions {
-		for _, value := range option {
+	for _, option := range urlOptions {
+		for key, value := range option {
 			propQuery.Add(key, value)
 		}
 	}
