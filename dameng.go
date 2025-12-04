@@ -1,9 +1,11 @@
 package dameng
 
 import (
+	"fmt"
 	"net"
 	"net/url"
 	"strconv"
+	"strings"
 )
 
 // DriverName 数据库驱动、连接字符串协议名称
@@ -22,15 +24,15 @@ type ConnectionConfig struct {
 	props map[string][]string
 }
 
-type withOption func(config *ConnectionConfig)
+type Options func(config *ConnectionConfig)
 
-func WithProp(key string, value string) withOption {
+func WithProp(key string, value string) Options {
 	return func(config *ConnectionConfig) {
 		config.props[key] = append(config.props[key], value)
 	}
 }
 
-func NewConnectionConfig(user, password, host string, port int, schema string, propsFunc ...withOption) *ConnectionConfig {
+func NewConnectionConfig(user, password, host string, port int, schema string, propsFunc ...Options) *ConnectionConfig {
 	config := &ConnectionConfig{
 		user: user,
 		password: password,
@@ -55,35 +57,36 @@ func NewConnectionConfig(user, password, host string, port int, schema string, p
 }
 
 func (c *ConnectionConfig) BuildUrl() string {
-	propQuery := url.Values{}
-	for key, option := range c.props {
-		for _, value := range option {
-			propQuery.Add(key, value)
-		}
+	mergeMap := make(map[string][]string)
+	for key, options := range c.props {
+		mergeMap[key] = append(mergeMap[key], options...)
 	}
 
-	dmUrl := &url.URL{
-		Scheme:   DriverName,
-		User:     url.UserPassword(c.user, c.password),
-		Host:     net.JoinHostPort(c.host, strconv.Itoa(c.port)),
-		RawQuery: propQuery.Encode(),
-	}
-	return dmUrl.String()
+	return buildUrl(c.user, c.password, c.host, c.port, mergeMap)
 }
 
 func BuildUrl(user, password, host string, port int, urlOptions ...map[string]string) string {
-	propQuery := url.Values{}
+	mergeMap := make(map[string][]string)
 	for _, option := range urlOptions {
 		for key, value := range option {
-			propQuery.Add(key, value)
+			mergeMap[key] = append(mergeMap[key], value)
 		}
+	}
+
+	return buildUrl(user, password, host, port, mergeMap)
+}
+
+func buildUrl(user, password, host string, port int, mergeMap map[string][]string) string {
+	query := make([]string, 0, len(mergeMap))
+	for key, values := range mergeMap {
+		query = append(query, fmt.Sprintf("%s=%s", key, strings.Join(values, ",")))
 	}
 
 	dmUrl := &url.URL{
 		Scheme:   DriverName,
 		User:     url.UserPassword(user, password),
 		Host:     net.JoinHostPort(host, strconv.Itoa(port)),
-		RawQuery: propQuery.Encode(),
+		RawQuery: strings.Join(query, "&"),
 	}
 	return dmUrl.String()
 }
