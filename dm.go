@@ -68,6 +68,9 @@ func (d Dialector) Initialize(db *gorm.DB) (err error) {
 		}
 	}
 
+	// 包装 ConnPool 并添加默认的 SQL 转换器（包含 IS TRUE/IS FALSE 语法替换）
+	db.ConnPool = WrapConnPool(db.ConnPool, NewBooleanSyntaxTransformer())
+
 	// register callbacks
 	callbackConfig := &callbacks.Config{
 		CreateClauses: CreateClauses,
